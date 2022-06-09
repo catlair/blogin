@@ -1,0 +1,47 @@
+name: build-cron
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-cron:
+    runs-on: ubuntu-latest
+    environment: Build
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install upx
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y upx-ucl
+      - uses: actions/setup-go@v3
+        with:
+          go-version: '>=1.17.0'
+      - run: |
+          go get -u 
+          make build
+          cp ./bin/* .
+          upx -9 blogin-darwin-amd64
+          upx -9 blogin-linux-amd64
+          upx -9 blogin-windows-amd64.exe
+      - name: Zip
+        run: |
+          tar -czf blogin-darwin-amd64.tar.gz blogin-darwin-amd64 README.md
+          tar -czf blogin-darwin-arm64.tar.gz blogin-darwin-arm64 README.md
+          tar -czf blogin-linux-amd64.tar.gz blogin-linux-amd64 README.md
+          tar -czf blogin-linux-arm64.tar.gz blogin-linux-arm64 README.md
+          tar -czf blogin-windows-amd64.tar.gz blogin-windows-amd64.exe README.md
+          tar -czf blogin-windows-arm64.tar.gz blogin-windows-arm64.exe README.md
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            blogin-darwin-amd64.tar.gz
+            blogin-darwin-arm64.tar.gz
+            blogin-linux-amd64.tar.gz
+            blogin-linux-arm64.tar.gz
+            blogin-windows-amd64.tar.gz
+            blogin-windows-arm64.tar.gz
+          draft: false
+          prerelease: false
