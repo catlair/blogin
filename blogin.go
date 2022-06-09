@@ -5,13 +5,16 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
-	"github.com/imroc/req/v3"
 	"net/http"
 	"net/url"
 	"os"
+	"os/exec"
+	"runtime"
 	"sort"
 	"strconv"
 	"time"
+
+	"github.com/imroc/req/v3"
 )
 
 var html1 = `<!doctype html>
@@ -146,6 +149,12 @@ func (l QrLogin) ToJson() []byte {
 	return b
 }
 
+var commands = map[string]string{
+	"windows": "start",
+	"darwin":  "open",
+	"linux":   "xdg-open",
+}
+
 var client = req.C().SetCommonHeaders(map[string]string{
 	"user-agent":   "Mozilla/5.0 BiliDroid/6.74.0 (bbcallen@gmail.com) os/android model/MI 10 Pro mobi_app/android build/6740400 channel/xiaomi innerVer/xiaomi osVer/10 network/2",
 	"content-type": "application/x-www-form-urlencoded; charset=utf-8",
@@ -251,6 +260,16 @@ func appSign(params map[string]string) string {
 	return query + "sign=" + (params)["sign"]
 }
 
+func Open(uri string) error {
+	run, ok := commands[runtime.GOOS]
+	if !ok {
+		return fmt.Errorf("不知道如何在 %s 上打卡浏览器，请手动操作", runtime.GOOS)
+	}
+
+	cmd := exec.Command(run, uri)
+	return cmd.Start()
+}
+
 func main() {
 	authCode, authUrl := getAuthCode()
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -273,6 +292,9 @@ func main() {
 			return
 		}
 	})
-	fmt.Println("http server started，请点击链接扫码登录", "http://localhost:18092")
+	url := "http://localhost:18092"
+	fmt.Println("http server started，请点击链接扫码登录", url)
+	fmt.Println("如果跳转浏览器失败，请手动打开浏览器打开链接")
+	Open(url)
 	fmt.Println(http.ListenAndServe(":18092", nil))
 }
