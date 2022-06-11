@@ -21,14 +21,11 @@ jobs:
       - run: |
           go get -u 
           make build
-          cp ./bin/* .
-          upx -9 blogin-darwin-amd64
-          upx -9 blogin-linux-amd64
-          upx -9 blogin-windows-amd64.exe
+          upx -9 ./bin/*
       - name: Zip
         run: |
-          tar -czf blogin-darwin-amd64.tar.gz blogin-darwin-amd64 README.md
-          tar -czf blogin-darwin-arm64.tar.gz blogin-darwin-arm64 README.md
+          tar -czf blogin-macos-amd64.tar.gz blogin-macos-amd64 README.md
+          tar -czf blogin-macos-arm64.tar.gz blogin-macos-arm64 README.md
           tar -czf blogin-linux-amd64.tar.gz blogin-linux-amd64 README.md
           tar -czf blogin-linux-arm64.tar.gz blogin-linux-arm64 README.md
           tar -czf blogin-windows-amd64.tar.gz blogin-windows-amd64.exe README.md
@@ -37,8 +34,8 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            blogin-darwin-amd64.tar.gz
-            blogin-darwin-arm64.tar.gz
+            blogin-macos-amd64.tar.gz
+            blogin-macos-arm64.tar.gz
             blogin-linux-amd64.tar.gz
             blogin-linux-arm64.tar.gz
             blogin-windows-amd64.tar.gz
