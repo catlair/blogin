@@ -156,7 +156,7 @@ var commands = map[string]string{
 }
 
 var client = req.C().SetCommonHeaders(map[string]string{
-	"user-agent":   "Mozilla/5.0 BiliDroid/6.74.0 (bbcallen@gmail.com) os/android model/MI 10 Pro mobi_app/android build/6740400 channel/xiaomi innerVer/xiaomi osVer/10 network/2",
+	"user-agent":   "Mozilla/5.0 BiliDroid/6.74.0 (bbcallen@gmail.com) os/android model/MI 10 Pro mobi_app/android build/7740400 channel/xiaomi innerVer/xiaomi osVer/10 network/2",
 	"content-type": "application/x-www-form-urlencoded; charset=utf-8",
 })
 
@@ -238,8 +238,8 @@ func qrCodePoll(authCode string) QrLogin {
  * @param params *map[string]string
  */
 func appSign(params map[string]string) string {
-	appkey := "4409e2ce8ffd12b8"
-	appsec := "59b43e04ad6965f34319062b478f83dd"
+	appkey := "783bbb7264451d82"
+	appsec := "2653583c8873dea268ab9386918b1d65"
 	// 给 params 加入 appkey
 	(params)["appkey"] = appkey
 	// 对 params 进行排序
